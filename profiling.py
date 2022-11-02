@@ -5,6 +5,14 @@
 # %memit
 # %mprun
 
+#   NOTES gia tin askisi #:
+#   
+#
+#
+#
+#
+
+
 
 # magic command % --> only one line
 #               %% for all the shell

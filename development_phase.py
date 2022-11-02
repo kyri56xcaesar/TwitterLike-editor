@@ -33,33 +33,41 @@ def help():
 
 # Create a tweet function handler.  
 def create_tweet():
-    testing_function()
+    print("Creating a tweet...")
+    #testing_function()
     
 # Read a tweet function handler.
 def read_tweet(number):
+    print("Reading a tweet...")
     
-    pass
     
 # Update a tweet function handler.
 def update_tweet(number):
-    pass
+    print("Updating a tweet...")
+    
     
 # Delete a tweet function handler.
 def delete_tweet():
-    pass
+    print("Deleting a tweet...")
+    
     
 # Read the Last tweet of the tweet function handler
 def read_Ltweet():
-    pass
+    print("Reading last tweet...")
+    
     
 def read_up():
-    pass
+    print("Going up.")
+    
     
 def read_down():
-    pass
+    print("Going down")
+    
+
     
 def print_current():
-    pass
+    print("Printing current:")
+    
     
 def quit():
     print("Quiting...")
@@ -75,9 +83,10 @@ def save():
     time.sleep(0.3)
 
     print("\n\nContents saved!", end="")
-    pass
+    
     
 def exterminate():
+    print("Exiting.")
     save()
 
     exit()
@@ -87,51 +96,67 @@ def exterminate():
 
 if __name__ == "__main__":
 
+
     # SHELL 
     while(True):
         # Prompt input
-        command = input("#_> ")
+        args = input("#_> ").split()
         
+        args.reverse()
 
-        # Handle choices with if statements.
-        if command[0] == "c":
-            create_tweet()
-            
-        elif command == "r":
-            if len(command) < 2:
-                print("Must provide a number!")
+        while args != []:
+            command = args.pop()
+
+            # Handle choices with if statements.
+            if command == 'c':
+                create_tweet()
+
+            elif command == 'r':
+                if len(command) < 2:
+                    print("Must provide a number!")
+                else:
+                    num = args.pop()
+                    #if num.is
+                    if num.isnumeric():
+                        read_tweet(num)
+                    else:
+                        print("Must provide a number for a tweet to read")
+                        break
+
+            elif command == 'u':
+                if len(command) < 2:
+                    print("Must provide a number!")
+                else:
+                    num = args.pop()
+                    if num.isnumeric():
+                        update_tweet(args.pop())
+                    else:
+                        print("Must provide a number for a tweet to update")
+                        break
+
+            elif command == 'd':
+                delete_tweet()
+
+            elif command == '$':
+                read_Ltweet()
+
+            elif command == '-':
+                read_down()
+
+            elif command == '+':
+                read_up()
+
+            elif command == '=':
+                print_current()
+
+            elif command == 'q':
+                quit()
+
+            elif command == 'w':
+                save()
+
+            elif command == 'x':
+                exterminate()
+            # if false input or no input. print help
             else:
-                read_tweet(command.split()[1])
-            
-        elif command == "u":
-            if len(command) < 2:
-                print("Must provide a number!")
-            else:
-                update_tweet(command.split()[1])
-        
-        elif command == "d":
-            delete_tweet()
-            
-        elif command == "$":
-            read_Ltweet()
-            
-        elif command == "-":
-            read_down()
-            
-        elif command == "+":
-            read_up()
-        
-        elif command == "=":
-            print_current()
-            
-        elif command == "q":
-            quit()
-            
-        elif command == "w":
-            save()
-            
-        elif command == "x":
-            exterminate()
-        # if false input or no input. print help
-        else:
-            help()
+                help()
