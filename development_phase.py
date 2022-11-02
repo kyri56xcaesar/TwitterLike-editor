@@ -3,6 +3,17 @@ import time
 import json
 
 
+def testing_function():
+    with open("test.json", "r") as json_file,\
+        open("new_test.json", "w") as json_new_file:
+        tweet = json.loads()
+        print(tweet)
+
+
+    
+
+
+
 current_tweet = ""
 
 # Help message showing available options in case of invalid input.
@@ -18,13 +29,11 @@ def help():
         \t = :> Print current tweet.\n\
         \t q :> Quit without save.\n\
         \t w :> Save and write to disk.\n\
-        \t x :> Exit and save.\n\
-         \
-        ")
+        \t x :> Exit and save.\n")
 
 # Create a tweet function handler.  
 def create_tweet():
-    pass
+    testing_function()
     
 # Read a tweet function handler.
 def read_tweet(number):
