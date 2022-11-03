@@ -1,7 +1,8 @@
-
+from datetime import datetime, date, time, timezone
 import time
 import json
 import os
+import ast
 
 
 
@@ -52,7 +53,12 @@ current_tweet = ""
 current_tweet_id = 0
 
 # number prompted when reading or updating a tweet
-number = 0
+number = 'foo'
+
+
+# Tasks to do in order to save
+tasks = []
+
 
 # --- Setup method.
 # Initialize the t_ID list with the index/number of each line
@@ -82,22 +88,67 @@ def help():
 # Create a tweet function handler.  
 def create_tweet():
     print("Creating a tweet...")
-    testing_function()
+
+    # text
+    ttext = input("Enter text: ")
+
+    # created at
+    tdate = date.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
+ 
+
+    # Create a new JSON tweet
+    new_tweet = json.dumps({'text': ttext,'created at':tdate})
+    
+
+    # Where to save?
+
+    tasks.append({"new":new_tweet})
+
+    # save to file?
+    with open("test.json", "a") as file:
+        file.write(new_tweet+"\n")
+
+    # Set this new tweet as the current tweet 
+    current_tweet_id = t_ID[-1] + 1
+    # Set the new current_tweet
+    current_tweet = new_tweet
+    
+    # Update the tweetID list
+    t_ID.append(current_tweet)
+    
+
+
+
+    #testing_function()
     
 # Read a tweet function handler.
 def read_tweet(number, prompt=False):
 
+    global current_tweet_id
+    global current_tweet
+
     # Must get a number
     if prompt:
-        number = int(input("Enter the ID of the tweet you want to read: "))
+        number = input("Enter the ID of the tweet you want to read: ")
+        if number.isnumeric() == False:
+            return
+        number = int(number)
     else:
         print("Reading a tweet...")
     
-    print(number)
-
-    if number <= 1 or number >= len(t_ID):
+    # Check if number is valid
+    if number < 1 or number >= len(t_ID):
         print("Invalid tweet ID")
         return
+
+    # Find the corresponding tweet
+    with open("tweetdhead300000.json", "r") as rfile:
+        for i, line in enumerate(rfile):
+            if i + 1 == number:
+                current_tweet=line
+                current_tweet_id = i+1
+                break
+    print(str(current_tweet_id) + current_tweet)
     
 # Update a tweet function handler.
 def update_tweet(number, prompt=False):
@@ -148,7 +199,7 @@ def read_Ltweet():
     
     
     
-def read_up():
+def read_prev():
     print("Going up.")
 
     global current_tweet_id
@@ -158,30 +209,34 @@ def read_up():
         return
 
     current_tweet_id = t_ID[current_tweet_id - 1] 
+    # must update current tweet as well
+    
 
     
-def read_down():
+def read_next():
     print("Going down")
 
     global current_tweet_id
     
-    if current_tweet_id > t_ID.length:
+    if current_tweet_id > len(t_ID):
         print("Can't do that.")
         return
 
     current_tweet_id = t_ID[current_tweet_id + 1]
+    # must update current tweet as well
 
-    
-def print_current():
+# print the curret_tweet
+def print_current(prompt=False):
+
     print("\nPrinting current:\n")
     print(f"Current tweet ID: {current_tweet_id}")
 
-    toPrint = input("Print the whole tweet? [y]")
-    print(toPrint)
-    print(type(toPrint))
-    if toPrint.capitalize() == 'Y' or toPrint == "":
+    if prompt:
+        toPrint = input("Print the whole tweet? [y]")
+        if toPrint.capitalize() == 'Y' or toPrint == "":
+            print(current_tweet)
+    else:
         print(current_tweet)
-    
     
 def quit(toSave=False):
     print("Quiting...")
@@ -213,7 +268,6 @@ if __name__ == "__main__":
     while(True):
         # Prompt input
         args = input("#_> ").split()
-        
         args.reverse()
 
         while args != []:
@@ -228,10 +282,14 @@ if __name__ == "__main__":
 
             # Read a tweet.
             elif command == 'r':
+                number = 'foo'
                 # Check if number is given
-                number = args.pop()
+                if args != []:
+                    number = args.pop()            
 
-                if number.isnumeric() == False:
+                if int(number) < 0:
+                    print("Invalid input.")     
+                elif number.isnumeric() == False:
                     read_tweet(0, True)    # If no number is provided. Prompt inside.
                     args.insert(1, number) # Restore argument
                 else:
@@ -259,11 +317,11 @@ if __name__ == "__main__":
 
             # Set the upper tweet as current.
             elif command == '-':
-                read_down()
+                read_prev()
 
             # Set the lower tweet as current.
             elif command == '+':
-                read_up()
+                read_next()
 
             # Print the current tweet.
             elif command == '=':
@@ -287,5 +345,5 @@ if __name__ == "__main__":
                 help()
 
             # if false input or no input. print help
-            elif args==[]:
-                help()
+            #elif args==[]:
+            #    help()
