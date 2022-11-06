@@ -15,13 +15,12 @@ import ast
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
+
     
 # Tweets ID array/list record
 t_ID = []
-
 # Current tweet selected (as string)
 current_tweet = ""
-
 # Current tweet ID selected
 current_tweet_id = -1
 
@@ -29,6 +28,9 @@ current_tweet_id = -1
 number = 'foo'
 
 
+
+# Memory tweets
+mem_tweets = []
 # Tasks to do in order to save
 tasks = []
 
@@ -57,6 +59,11 @@ def help():
         \t q :> Quit without save.\n\
         \t w :> Save and write to disk.\n\
         \t x :> Exit and save.\n")
+
+def print_table(f, to):
+
+    for i in range(to - f):
+        print(t_ID[f + i])
 
 # Create a tweet function handler.      --> DONE
 def create_tweet():
@@ -107,22 +114,26 @@ def read_tweet(number, prompt=False):
         if number.isnumeric() == False:
             return False
         number = int(number)
-    else:
-        print("Reading a tweet...")
     
     # Check if number is valid
     if number < 1 or number > len(t_ID):
         print("Invalid tweet ID")
         return False
 
+    print("Reading a tweet...")
+    current_tweet_id = number - 1
+
+
+    number = t_ID[current_tweet_id]
+
     # Find the corresponding tweet
     with open("tweetdhead300000.json", "r") as rfile:
         for i, line in enumerate(rfile):
-            if i + 1 == number:
+            if i == number:
                 current_tweet=line
-                current_tweet_id = i
                 break
 
+    #print("Current tID: " + str(current_tweet_id))
     return True
     
 # Update a tweet function handler.   --> TODO
@@ -137,32 +148,48 @@ def update_tweet(number, prompt=False):
     # Get the new text input
     new_text = input("Enter text: ")
 
-    # Update the current tweet
-    current_tweet.find("text")
+    tdate = date.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
+    
+    # Update the tweet
+    # break the string into parts
+    current_tweet = json.loads(current_tweet)
+    current_tweet.update({"text":new_text})
+    current_tweet.update({"created_at":tdate})
+
+   
+    # save in memory
+    mem_tweets.append(current_tweet)
+
+
 
     # Schedule task
     tasks.append(({"u":current_tweet}, current_tweet_id))
 
-    # read_tweet handles current_id position
     
     
 # Delete a tweet function handler. --> TODO
 def delete_tweet():
 
+
     global current_tweet_id
     global current_tweet
+
+    if current_tweet_id == -1:
+        print("There is no tweet selected currently")
+        return
 
     print("Deleting a tweet...")
 
     tasks.append(({"d":current_tweet}, current_tweet_id))
 
     ## UPDATE TWEET TABLE
-    for i in range(len(t_ID) - current_tweet_id + 1):
-        t_ID[current_tweet_id] = t_ID[current_tweet_id + 1]
 
-    # restart index
-    current_tweet_id = 0
+    t_ID.remove(t_ID[current_tweet_id])
+    
+  
+    current_tweet_id = -1
     current_tweet = ""
+
     
     
 # Read the Last tweet of the tweet function handler --> DONE
@@ -179,6 +206,7 @@ def read_Ltweet():
 
     # Get the last tweet
     current_tweet_id = t_ID[-1]
+    #print("Current tID is: " + str(current_tweet_id))
 
     
     
@@ -196,30 +224,41 @@ def read_Ltweet():
     
 # Head the tweet id index - 1 ---> DONE
 def read_prev():
-    print("Going up.")
-
     global current_tweet_id
-    
-    if current_tweet_id <= 0:
-        print("Can't do that.")
+
+
+    if current_tweet_id == -1:
+        print("There is no tweet selected currently.")
         return
 
-    current_tweet_id = t_ID[current_tweet_id - 1] 
-    read_tweet(current_tweet_id+1)
+    if current_tweet_id == 0:
+        print("Can't do that.")
+      
+        return
+    print("Going up...\n\n")
+
+    
+    read_tweet(current_tweet_id)
     
 
 # Head the tweet id index + 1 ---> DONE
 def read_next():
-    print("Going down")
-
     global current_tweet_id
+
+    if current_tweet_id == -1:
+        print("There is no tweet selected currently.")
+        return
+
+
     
-    if current_tweet_id >= len(t_ID) - 1:
+    if current_tweet_id == len(t_ID) - 1:
         print("Can't do that.")
         return
 
-    current_tweet_id = t_ID[current_tweet_id + 1]
-    read_tweet(current_tweet_id+1)
+    print("Going down...\n\n")
+
+    read_tweet(current_tweet_id+2)
+
 
 
 # Print the curret_tweet --> DONE
@@ -344,6 +383,9 @@ if __name__ == "__main__":
             # If h is asked implicitely
             elif command == 'h' and len(args) != 1:
                 help()
+
+            elif command == 'ph':
+                print_table(int(input("From: ")), int(input("To: ")))
 
             # if false input or no input. print help
             #elif args==[]:
