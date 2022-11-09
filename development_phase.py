@@ -438,8 +438,9 @@ if __name__ == "__main__":
                 print_table(int(input("From: ")), int(input("To: ")))
 
             elif command == 'id':
-                print("Current ID is: " + str(current_tweet_id)+"\nCorresponding to: " + str(t_ID[current_tweet_id]))
-
+                if current_tweet_id != -1:
+                    print("Current ID is: " + str(current_tweet_id)+"\nCorresponding to: " + str(t_ID[current_tweet_id]))
+    
             # if false input or no input. print help
             #elif args==[]:
             #    help()
