@@ -6,7 +6,7 @@ import ast
 
 
 # Name of the file used
-file_name = "tweetdhead300000.json"
+file_name = "test.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
