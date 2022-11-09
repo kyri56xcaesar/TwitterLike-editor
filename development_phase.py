@@ -123,12 +123,12 @@ def read_tweet(number, prompt=False):
     current_tweet_id = number - 1
 
 
-    number = t_ID[current_tweet_id]
+    #number = t_ID[current_tweet_id]
 
     # Find the corresponding tweet
     with open(file_name, "r") as rfile:
         for i, line in enumerate(rfile):
-            if i == number:
+            if i == current_tweet_id:
                 current_tweet=line
                 break
 
