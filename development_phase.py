@@ -4,6 +4,7 @@ import json
 import os
 import ast
 from line_profiler import LineProfiler
+from memory_profiler import profile
 import random
 # Name of the file used
 file_name = "tweetdhead300000.json"
@@ -98,6 +99,7 @@ def create_tweet():
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
+
 def read_tweet(number, prompt=False):
 
     if number < 0:
@@ -136,6 +138,7 @@ def read_tweet(number, prompt=False):
     return True
     
 # Update a tweet function handler.   --> TODO
+
 def update_tweet(number, prompt=False):
 
     global current_tweet
@@ -168,6 +171,7 @@ def update_tweet(number, prompt=False):
     
     
 # Delete a tweet function handler. --> TODO
+
 def delete_tweet():
 
 
@@ -297,6 +301,7 @@ def save():
     print("\n\nContents saved!")
     
 # task structure : ({whatToDo, tweet}, tId)
+
 def task_handler():
 
 
@@ -357,23 +362,26 @@ if __name__ == "__main__":
     configureID()
     i=random.randint(0, 100)
     n = 100
+    n1=55
+
     lp = LineProfiler()
     lp_wrapper = lp(read_tweet)
-    lp_wrapper(n)
+    lp_wrapper(i)
     print("Line Profiler For Read Tweet")
     
-    
-    lp_wrapper = lp(task_handler)
-    lp_wrapper()
-    print("Line Profiler For Reading Task")
-    
-
     lp_wrapper = lp(delete_tweet)
     lp_wrapper()
     print("Line Profiler For delete Tweet")
     
+    lp_wrapper = lp(create_tweet)
+    lp_wrapper()
+    print("Line Profiler For Creating Tweet")
+
+    lp_wrapper = lp(update_tweet)
+    lp_wrapper(n1)
+    print("Line Profiler For Updating Tweet")
     
     lp_wrapper = lp(task_handler)
     lp_wrapper()
-    print("Line Profiler For Deleting Task")
+    print("Line Profiler For Task_Handler")
     lp.print_stats()
