@@ -3,10 +3,11 @@ import time
 import json
 import os
 import ast
-
+import random
+from memory_profiler import profile
 
 # Name of the file used
-file_name = "test.json"
+file_name = "tweetdhead300000.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
@@ -168,6 +169,7 @@ def update_tweet(number, prompt=False):
     
     
 # Delete a tweet function handler. --> TODO
+
 def delete_tweet():
 
 
@@ -297,6 +299,7 @@ def save():
     print("\n\nContents saved!")
     
 # task structure : ({whatToDo, tweet}, tId)
+@profile
 def task_handler():
 
 
@@ -355,94 +358,11 @@ if __name__ == "__main__":
 
 
     configureID()
-
-    # SHELL 
-    while(True):
-        # Prompt input
-        args = input("#_> ").split()
-        args.reverse()
-
-        while args != []:
-            command = args.pop()
-
-
-            # Not sure how to handle garbage arguments. Ignore or iterate next ;<?
-
-            # Handle choices with if statements.
-            if command == 'c':
-                create_tweet()
-
-            # Read a tweet.
-            elif command == 'r':
-                number = 'foo'
-                # Check if number is given
-                if args != []:
-                    number = args.pop()            
-   
-                if number.isnumeric() == False:
-                    read_tweet(0, True)    # If no number is provided. Prompt inside.
-                    args.insert(1, number) # Restore argument
-                else:
-                    read_tweet(int(number), False)
-                    
-                        
-            # Update a tweet.
-            elif command == 'u':
-                # Check if a number is given
-                number = args.pop()
-
-                if number.isnumeric() == False:
-                    update_tweet(0, True)  # If no number is provided. Prompt inside.
-                    args.insert(1, number) # Restore argument
-                else:
-                    update_tweet(int(number), False)
-
-            # Delete the current tweet.
-            elif command == 'd':
-                delete_tweet()
-
-            # Read the last tweet.
-            elif command == '$':
-                read_Ltweet()
-
-            # Set the upper tweet as current.
-            elif command == '-':
-                read_prev()
-
-            # Set the lower tweet as current.
-            elif command == '+':
-                read_next()
-
-            # Print the current tweet.
-            elif command == '=':
-                print_current()
-
-            # Quit without saving.
-            elif command == 'q':
-                quit()
-
-            # Save/Write to file.
-            elif command == 'w':
-                save()
-
-            # Quit and Save.
-            elif command == 'x':
-                save()
-                quit()
-            
-            # If h is asked implicitely
-            elif command == 'h' and len(args) != 1:
-                help()
-
-            elif command == 'ph':
-                print_table(int(input("From: ")), int(input("To: ")))
-
-            elif command == 'id':
-                if current_tweet_id != -1:
-                    print("Current ID is: " + str(current_tweet_id)+"\nCorresponding to: " + str(t_ID[current_tweet_id]))
-    
-            # if false input or no input. print help
-            #elif args==[]:
-            #    help()
-
-            task_handler()
+    i=random.randint(1, 20000)
+    read_tweet(i)
+    delete_tweet()
+    task_handler()
+    i=random.randint(1, 20000)
+    update_tweet(i)
+    task_handler()
+  
