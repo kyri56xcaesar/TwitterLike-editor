@@ -1,43 +1,37 @@
 from datetime import datetime, date, time, timezone
 import time
 import json
-import os
-import ast
+
 
 
 # Name of the file used
-file_name = "test.json"
+file_name = "tweetdhead300000.json"
+#file_name = "test.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
 
-    
-# Tweets ID array/list record
-t_ID = []
 # Current tweet selected (as string)
 current_tweet = ""
 # Current tweet ID selected
 current_tweet_id = -1
 
-# number prompted when reading or updating a tweet
-number = 'foo'
-
-
-
 # Memory tweets
 mem_tweets = []
-# Tasks to do in order to save
-tasks = []
+
 
 
 # --- Setup method.
 # Initialize the t_ID list with the index/number of each line
 # Consider starting from 1. As the first tweet is ID is 1.
 def configureID():
-     with open(file_name, "rb") as file:
+    global mem_tweets
 
-        for i, line in enumerate(file):
-            t_ID.append(i)
+    with open(file_name, "rb") as file:
+
+        for line in file:
+            mem_tweets.append(json.loads(line))
+           
 
 # --- Helper method/
 # Help message showing available options in case of invalid input.
@@ -55,11 +49,6 @@ def help():
         \t w :> Save and write to disk.\n\
         \t x :> Exit and save.\n")
 
-def print_table(f, to):
-
-    for i in range(to - f):
-        if f + i < len(t_ID):
-            print(t_ID[f + i])
 
 # Create a tweet function handler.      --> DONE
 def create_tweet():
@@ -74,24 +63,20 @@ def create_tweet():
 
     # created at
     tdate = datetime.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
-    print(tdate)
 
-    # Create a new JSON tweet
-    new_tweet = json.dumps({'text': ttext,'created at':tdate})
+    # Create a new dictionary of a tweet 
+    new_tweet = {"text": ttext, "created_at": tdate}
     
-    # Schedule a task
-    tasks.append(({"n":new_tweet}, current_tweet_id))
-
-    # Set this new tweet as the current tweet 
-    if t_ID != []:
-        current_tweet_id = int(t_ID[-1]) + 1
-    else:
-        current_tweet_id = 0
-    # Set the new current_tweet
+    # Set it as the new current_tweet
     current_tweet = new_tweet
-    
-    # Update the tweetID list
-    t_ID.append(current_tweet_id)
+
+    if mem_tweets != [] and mem_tweets[-1] == "":
+        mem_tweets[-1] = current_tweet
+    else:
+    # Attach the new tweet in the tweets list
+        mem_tweets.append(current_tweet)
+    # Set the current_tweet_ID
+    current_tweet_id = len(mem_tweets) - 1
     
 
 
@@ -115,24 +100,15 @@ def read_tweet(number, prompt=False):
         number = int(number)
     
     # Check if number is valid
-    if number < 1 or number > len(t_ID):
+    if number < 1 or number > len(mem_tweets):
         print("Invalid tweet ID")
         return False
 
     print("Reading a tweet...")
     current_tweet_id = number - 1
 
+    current_tweet = mem_tweets[current_tweet_id]
 
-    #number = t_ID[current_tweet_id]
-
-    # Find the corresponding tweet
-    with open(file_name, "r") as rfile:
-        for i, line in enumerate(rfile):
-            if i == current_tweet_id:
-                current_tweet=line
-                break
-
-    #print("Current tID: " + str(current_tweet_id))
     return True
     
 # Update a tweet function handler.   --> TODO
@@ -150,22 +126,12 @@ def update_tweet(number, prompt=False):
     tdate = datetime.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
     
     # Update the tweet
-    # create a dictionary out of the tweet
-    current_tweet = json.loads(current_tweet)
     current_tweet.update({"text":new_text})
     current_tweet.update({"created_at":tdate})
-    current_tweet = '{"'+str(list(current_tweet.keys())[0])+'": "'+current_tweet.get("text")+'", "'+str(list(current_tweet.keys())[1])+'": "'+current_tweet.get("created_at")+'"}\n'
-   
 
-    # for improvement.
-    # save in memory
-    #mem_tweets.append({current_tweet_id:current_tweet})
-    
 
-    # Schedule task
-    tasks.append(({"u":current_tweet}, current_tweet_id))
 
-    
+
     
 # Delete a tweet function handler. --> TODO
 def delete_tweet():
@@ -181,11 +147,9 @@ def delete_tweet():
     print("Deleting a tweet...")
 
 
-    # Tasking IMPROVEMENT
-    tasks.append(({"d":current_tweet}, current_tweet_id))
-
+ 
     ## UPDATE TWEET TABLE
-    t_ID.remove(t_ID[current_tweet_id])
+    mem_tweets.remove(mem_tweets[current_tweet_id])
     
   
     current_tweet_id = -1
@@ -196,32 +160,21 @@ def delete_tweet():
 # Read the Last tweet of the tweet function handler --> DONE
 def read_Ltweet():
  
-    if t_ID == None:
+    if mem_tweets == []:
         print("Somehow you've deleted all the tweets<?. No tweets left to read.")
         return
 
-    print("Reading last tweet...\n")
+    print("Reading last tweet...")
     
     global current_tweet_id
     global current_tweet
 
     # Get the last tweet
-    current_tweet_id = t_ID[-1]
+    current_tweet_id = len(mem_tweets) - 1
     #print("Current tID is: " + str(current_tweet_id))
 
-    
-    
-    with open(file_name, "rb") as file:
+    current_tweet = mem_tweets[-1]
 
-        try:
-            file.seek(-2, os.SEEK_END)
-            while file.read(1) != b'\n':
-                file.seek(-2, os.SEEK_CUR)
-        except OSError:
-            file.seek(0)
-        
-        current_tweet=file.readline().decode()
-    
     
 # Head the tweet id index - 1 ---> DONE
 def read_prev():
@@ -236,7 +189,7 @@ def read_prev():
         print("Can't do that.")
       
         return
-    print("Going up...\n\n")
+    print("Going up...")
 
     
     read_tweet(current_tweet_id)
@@ -249,14 +202,12 @@ def read_next():
     if current_tweet_id == -1:
         print("There is no tweet selected currently.")
         return
-
-
     
-    if current_tweet_id == len(t_ID) - 1:
+    if current_tweet_id == len(mem_tweets) - 1:
         print("Can't do that.")
         return
 
-    print("Going down...\n\n")
+    print("Going down...")
 
     read_tweet(current_tweet_id+2)
 
@@ -269,14 +220,15 @@ def print_current(prompt=False):
         print("No tweet selected.")
         return
 
-    print("\nPrinting current:\n")
-    print(f"Current tweet ID: {current_tweet_id}")
+    print("Printing current:")
+    print(f"Current tweet ID: {current_tweet_id+1}")
 
     if prompt:
         toPrint = input("Print the whole tweet? [y]")
         if toPrint.capitalize() == 'Y' or toPrint == "":
             print(current_tweet)
     else:
+        print("\t", end="")
         print(current_tweet)
     
 ## QUIT method      ---> DONE
@@ -291,64 +243,16 @@ def quit(toSave=False):
     
 ## SAVE method - Overwrites the file --> TODO
 def save():
-    print("\n\nSaving contents...")
+    print("Saving contents...")
     time.sleep(0.3)
 
+    with open(file_name, "w") as file:
+        for line in mem_tweets:
+            json.dump(line, file)
+            file.write("\n")
+       
     print("\n\nContents saved!")
     
-# task structure : ({whatToDo, tweet}, tId)
-def task_handler():
-
-
-    while tasks != []:
-        task = tasks.pop()
-        if list(task[0].keys())[0] == "n":
-            with open(file_name, "a") as file:
-                try:
-                    print(file.tell())
-                    file.seek(0, 2)
-                    print(file.tell())
-                    if file.tell() != 0:
-                        file.write("\n")
-                    print(task[0].get("n"))
-                    file.write(task[0].get("n"))
-                    #json.dump(task[0].get("n"), file, indent=0)
-                except OSError:
-                    print("error")
-                    file.seek(0)
-        
-     
-     
-        if list(task[0].keys())[0] == "d":
-            lines = []
-            # delete the tweet from the file
-            with open(file_name, "r") as fp:
-                lines = fp.readlines()
-
-            with open(file_name, "w") as fp:
-                for number, line in enumerate(lines):
-                    if number != task[1]:
-                        fp.write(line)
-     
-            
-        if list(task[0].keys())[0] == "u":
-
-            lines = []
-            # read all the lines
-            with open(file_name, "r") as fp:
-                lines = fp.readlines()
-
-            # rewrite all the lines but with the updated ones
-            with open(file_name, "w") as fp:
-                for number, line in enumerate(lines):
-                    if number == current_tweet_id:
-                        fp.write(current_tweet)
-                    else:
-                        fp.write(line)
-
-                
-        
-        
 
 
 if __name__ == "__main__":
@@ -434,15 +338,7 @@ if __name__ == "__main__":
             elif command == 'h' and len(args) != 1:
                 help()
 
-            elif command == 'ph':
-                print_table(int(input("From: ")), int(input("To: ")))
+            else:
+                help()
 
-            elif command == 'id':
-                if current_tweet_id != -1:
-                    print("Current ID is: " + str(current_tweet_id)+"\nCorresponding to: " + str(t_ID[current_tweet_id]))
-    
-            # if false input or no input. print help
-            #elif args==[]:
-            #    help()
-
-            task_handler()
+        
