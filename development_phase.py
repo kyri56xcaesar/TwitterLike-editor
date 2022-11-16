@@ -6,6 +6,7 @@ import json
 
 # Name of the file used
 file_name = "tweetdhead300000.json"
+#file_name = "test.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
@@ -14,9 +15,6 @@ s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
 current_tweet = ""
 # Current tweet ID selected
 current_tweet_id = -1
-
-# number prompted when reading or updating a tweet
-number = 'foo'
 
 # Memory tweets
 mem_tweets = []
@@ -72,9 +70,11 @@ def create_tweet():
     # Set it as the new current_tweet
     current_tweet = new_tweet
 
-
+    if mem_tweets != [] and mem_tweets[-1] == "":
+        mem_tweets[-1] = current_tweet
+    else:
     # Attach the new tweet in the tweets list
-    mem_tweets.append(current_tweet)
+        mem_tweets.append(current_tweet)
     # Set the current_tweet_ID
     current_tweet_id = len(mem_tweets) - 1
     
@@ -248,9 +248,8 @@ def save():
 
     with open(file_name, "w") as file:
         for line in mem_tweets:
-            file.write('{"text": "'+ line.get("text")\
-                +'", "created_at": "'+ line.get("created_at")\
-                +'"}\n')
+            json.dump(line, file)
+            file.write("\n")
        
     print("\n\nContents saved!")
     
