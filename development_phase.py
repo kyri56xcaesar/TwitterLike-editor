@@ -5,7 +5,7 @@ import json
 
 
 # Name of the file used
-file_name = "test.json"
+file_name = "tweetdhead300000.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
@@ -247,8 +247,6 @@ def save():
     time.sleep(0.3)
 
     with open(file_name, "w") as file:
-        print(mem_tweets)
-        print(type(mem_tweets[0]))
         for line in mem_tweets:
             file.write('{"text": "'+ line.get("text")\
                 +'", "created_at": "'+ line.get("created_at")\
