@@ -12,7 +12,7 @@ file_name = "tweetdhead300000.json"
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
 
 # Current tweet selected (as string)
-current_tweet = ""
+current_tweet = {}
 # Current tweet ID selected
 current_tweet_id = -1
 
@@ -51,15 +51,17 @@ def help():
 
 
 # Create a tweet function handler.      --> DONE
-def create_tweet():
+def create_tweet(prompt=False, ttext="", verbose=True):
 
     global current_tweet
     global current_tweet_id
 
-    print("Creating a tweet...")
+    if verbose:
+        print("Creating a tweet...")
 
     # text
-    ttext = input("Enter text: ")
+    if prompt:
+        ttext = input("Enter text: ")
 
     # created at
     tdate = datetime.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
@@ -78,7 +80,7 @@ def create_tweet():
     # Set the current_tweet_ID
     current_tweet_id = len(mem_tweets) - 1
     
-
+    return tdate
 
     
 # Read a tweet function handler.  --> DONE
@@ -115,39 +117,45 @@ def read_tweet(number, prompt=False, verbose=True):
     return True
     
 # Update a tweet function handler.   --> TODO
-def update_tweet(number, prompt=False):
+def update_tweet(number, prompt=False, ttext="", verbose=True):
 
     global current_tweet
     global current_tweet_id
 
     # Read the tweet first. Set it as current and adjust id index via method @read_tweet
-    if read_tweet(number, prompt) == False:
+    if read_tweet(number, prompt, verbose) == False:
         return
     # Get the new text input
-    new_text = input("Enter text: ")
+    if prompt:
+        ttext = input("Enter text: ")
+
+    if verbose:
+        print("Updating tweet...")
 
     tdate = datetime.today().strftime('%a %b %d %H:%M:%S +0200%Z %Y')   # Day Month Day/Month HH:mm:ss timezone year
     
     # Update the tweet
-    current_tweet.update({"text":new_text})
+    current_tweet.update({"text":ttext})
     current_tweet.update({"created_at":tdate})
 
-
+    return tdate
 
 
     
-# Delete a tweet function handler. --> TODO
-def delete_tweet():
+# Delete a tweet function handler. 
+def delete_tweet(verbose=True):
 
 
     global current_tweet_id
     global current_tweet
 
     if current_tweet_id == -1:
-        print("There is no tweet selected currently")
+        if verbose:
+            print("There is no tweet selected currently")
         return
 
-    print("Deleting a tweet...")
+    if verbose:
+        print("Deleting a tweet...")
 
 
  
@@ -156,18 +164,20 @@ def delete_tweet():
     
   
     current_tweet_id = -1
-    current_tweet = ""
+    current_tweet = {}
 
     
     
 # Read the Last tweet of the tweet function handler --> DONE
-def read_Ltweet():
+def read_Ltweet(verbose=True):
  
     if mem_tweets == []:
-        print("Somehow you've deleted all the tweets<?. No tweets left to read.")
+        if verbose:
+            print("Somehow you've deleted all the tweets<?. No tweets left to read.")
         return
 
-    print("Reading last tweet...")
+    if verbose:
+        print("Reading last tweet...")
     
     global current_tweet_id
     global current_tweet
@@ -180,51 +190,59 @@ def read_Ltweet():
 
     
 # Head the tweet id index - 1 ---> DONE
-def read_prev():
+def read_prev(verbose=True):
     global current_tweet_id
 
 
     if current_tweet_id == -1:
-        print("There is no tweet selected currently.")
+        if verbose:
+            print("There is no tweet selected currently.")
         return
 
     if current_tweet_id == 0:
-        print("Can't do that.")
+        if verbose:
+            print("Can't do that.")
       
         return
-    print("Going up...")
+    if verbose:
+        print("Going up...")
 
     
-    read_tweet(current_tweet_id)
+    read_tweet(current_tweet_id, verbose)
     
 
 # Head the tweet id index + 1 ---> DONE
-def read_next():
+def read_next(verbose=True):
     global current_tweet_id
 
     if current_tweet_id == -1:
-        print("There is no tweet selected currently.")
+        if verbose:
+            print("There is no tweet selected currently.")
         return
     
     if current_tweet_id == len(mem_tweets) - 1:
-        print("Can't do that.")
+        if verbose:
+            print("Can't do that.")
         return
 
-    print("Going down...")
+    if verbose:
+        print("Going down...")
 
-    read_tweet(current_tweet_id+2)
+    read_tweet(current_tweet_id+2, verbose)
 
 
 
 # Print the curret_tweet --> DONE
-def print_current(prompt=False):
+def print_current(prompt=False, verbose=True):
 
-    if current_tweet_id == -1 or current_tweet == "":
-        print("No tweet selected.")
+    if current_tweet_id == -1 or current_tweet == {}:
+        if verbose:
+            print("No tweet selected.")
         return
 
-    print("Printing current:")
-    print(f"Current tweet ID: {current_tweet_id+1}")
+    if verbose:
+        print("Printing current:")
+        print(f"Current tweet ID: {current_tweet_id+1}")
 
     if prompt:
         toPrint = input("Print the whole tweet? [y]")
@@ -245,8 +263,9 @@ def quit(toSave=False):
     exit()
     
 ## SAVE method - Overwrites the file --> TODO
-def save():
-    print("Saving contents...")
+def save(verbose=True):
+    if verbose:
+        print("Saving contents...")
     time.sleep(0.3)
 
     with open(file_name, "w") as file:
@@ -254,7 +273,8 @@ def save():
             json.dump(line, file)
             file.write("\n")
        
-    print("\n\nContents saved!")
+    if verbose:
+        print("\n\nContents saved!")
     
 
 
