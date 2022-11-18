@@ -83,7 +83,8 @@ def create_tweet():
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
-def read_tweet(number, prompt=False):
+def read_tweet(number, prompt=False, verbose=True):
+
 
     if number < 0:
         print("Invalid tweet ID")
@@ -101,10 +102,12 @@ def read_tweet(number, prompt=False):
     
     # Check if number is valid
     if number < 1 or number > len(mem_tweets):
-        print("Invalid tweet ID")
+        if verbose:
+            print("Invalid tweet ID")
         return False
 
-    print("Reading a tweet...")
+    if verbose:
+        print("Reading a tweet...")
     current_tweet_id = number - 1
 
     current_tweet = mem_tweets[current_tweet_id]
