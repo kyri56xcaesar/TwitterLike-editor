@@ -270,9 +270,6 @@ class DevTest(unittest.TestCase):
 #class LogTest(unittest.TestCase):
 #    pass
 #
-#class RefTest(unittest.TestCase):
-#    pass
-#
-#
+
 if __name__ == "__main__":
     unittest.main()
