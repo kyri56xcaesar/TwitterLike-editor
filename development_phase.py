@@ -27,11 +27,16 @@ mem_tweets = []
 def configureID():
     global mem_tweets
 
-    with open(file_name, "rb") as file:
+    try:
+        with open(file_name, "rb") as file:
 
-        for line in file:
-            mem_tweets.append(json.loads(line))
-           
+            for line in file:
+                mem_tweets.append(json.loads(line))
+    except FileNotFoundError:
+        print(f"File named: {file_name} not found.")   
+        print("Exiting...\n\n")
+
+        exit()
 
 # --- Helper method/
 # Help message showing available options in case of invalid input.
