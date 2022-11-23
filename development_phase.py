@@ -5,8 +5,8 @@ import json
 
 
 # Name of the file used
-file_name = "tweetdhead300000.json"
-#file_name = "test.json"
+#file_name = "tweetdhead300000.json"
+file_name = "test.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
@@ -51,7 +51,7 @@ def help():
 
 
 # Create a tweet function handler.      --> DONE
-def create_tweet(prompt=False, ttext="", verbose=True):
+def create_tweet(prompt=False, ttext="", verbose=False):
 
     global current_tweet
     global current_tweet_id
@@ -85,7 +85,7 @@ def create_tweet(prompt=False, ttext="", verbose=True):
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
-def read_tweet(number, prompt=False, verbose=True):
+def read_tweet(number, prompt=False, verbose=False):
 
 
     if number < 0:
@@ -116,8 +116,8 @@ def read_tweet(number, prompt=False, verbose=True):
 
     return True
     
-# Update a tweet function handler.   --> TODO
-def update_tweet(number, prompt=False, ttext="", verbose=True):
+# Update a tweet function handler.   
+def update_tweet(number, prompt=False, ttext="", verbose=False):
 
     global current_tweet
     global current_tweet_id
@@ -143,7 +143,7 @@ def update_tweet(number, prompt=False, ttext="", verbose=True):
 
     
 # Delete a tweet function handler. 
-def delete_tweet(verbose=True):
+def delete_tweet(verbose=False):
 
 
     global current_tweet_id
@@ -169,7 +169,7 @@ def delete_tweet(verbose=True):
     
     
 # Read the Last tweet of the tweet function handler --> DONE
-def read_Ltweet(verbose=True):
+def read_Ltweet(verbose=False):
  
     if mem_tweets == []:
         if verbose:
@@ -190,7 +190,7 @@ def read_Ltweet(verbose=True):
 
     
 # Head the tweet id index - 1 ---> DONE
-def read_prev(verbose=True):
+def read_prev(verbose=False):
     global current_tweet_id
 
 
@@ -212,7 +212,7 @@ def read_prev(verbose=True):
     
 
 # Head the tweet id index + 1 ---> DONE
-def read_next(verbose=True):
+def read_next(verbose=False):
     global current_tweet_id
 
     if current_tweet_id == -1:
@@ -233,7 +233,7 @@ def read_next(verbose=True):
 
 
 # Print the curret_tweet --> DONE
-def print_current(prompt=False, verbose=True):
+def print_current(prompt=False, verbose=False):
 
     if current_tweet_id == -1 or current_tweet == {}:
         if verbose:
@@ -263,7 +263,7 @@ def quit(toSave=False):
     exit()
     
 ## SAVE method - Overwrites the file --> TODO
-def save(verbose=True):
+def save(verbose=False):
     if verbose:
         print("Saving contents...")
     time.sleep(0.3)
@@ -297,7 +297,7 @@ if __name__ == "__main__":
 
             # Handle choices with if statements.
             if command == 'c':
-                create_tweet()
+                create_tweet(verbose=True)
 
             # Read a tweet.
             elif command == 'r':
@@ -307,10 +307,10 @@ if __name__ == "__main__":
                     number = args.pop()            
    
                 if number.isnumeric() == False:
-                    read_tweet(0, True)    # If no number is provided. Prompt inside.
+                    read_tweet(0, prompt=True, verbose=True)    # If no number is provided. Prompt inside.
                     args.insert(1, number) # Restore argument
                 else:
-                    read_tweet(int(number), False)
+                    read_tweet(int(number), prompt=False, verbose=True)
                     
                         
             # Update a tweet.
@@ -319,30 +319,30 @@ if __name__ == "__main__":
                 number = args.pop()
 
                 if number.isnumeric() == False:
-                    update_tweet(0, True)  # If no number is provided. Prompt inside.
+                    update_tweet(0, prompt=True, verbose=True)  # If no number is provided. Prompt inside.
                     args.insert(1, number) # Restore argument
                 else:
-                    update_tweet(int(number), False)
+                    update_tweet(int(number), prompt=False, verbose=True)
 
             # Delete the current tweet.
             elif command == 'd':
-                delete_tweet()
+                delete_tweet(verbose=True)
 
             # Read the last tweet.
             elif command == '$':
-                read_Ltweet()
+                read_Ltweet(verbose=True)
 
             # Set the upper tweet as current.
             elif command == '-':
-                read_prev()
+                read_prev(verbose=True)
 
             # Set the lower tweet as current.
             elif command == '+':
-                read_next()
+                read_next(verbose=True)
 
             # Print the current tweet.
             elif command == '=':
-                print_current()
+                print_current(verbose=True)
 
             # Quit without saving.
             elif command == 'q':
@@ -350,11 +350,11 @@ if __name__ == "__main__":
 
             # Save/Write to file.
             elif command == 'w':
-                save()
+                save(verbose=True)
 
             # Quit and Save.
             elif command == 'x':
-                save()
+                save(verbose=True)
                 quit()
             
             # If h is asked implicitely

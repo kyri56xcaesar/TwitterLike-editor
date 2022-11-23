@@ -115,6 +115,12 @@ def read_tweet(number, prompt=False, verbose=True):
     current_tweet = mem_tweets[current_tweet_id]
 
     return True
+
+
+
+
+
+    
     
 # Update a tweet function handler.   --> TODO
 def update_tweet(number, prompt=False, ttext="", verbose=True):
