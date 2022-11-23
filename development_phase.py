@@ -56,7 +56,7 @@ def help():
 
 
 # Create a tweet function handler.      --> DONE
-def create_tweet(prompt=False, ttext="", verbose=False):
+def create_tweet(tprompt=False, ttext="", verbose=False):
 
     global current_tweet
     global current_tweet_id
@@ -65,7 +65,7 @@ def create_tweet(prompt=False, ttext="", verbose=False):
         print("Creating a tweet...")
 
     # text
-    if prompt:
+    if tprompt:
         ttext = input("Enter text: ")
 
     # created at
@@ -122,16 +122,16 @@ def read_tweet(number, prompt=False, verbose=False):
     return True
     
 # Update a tweet function handler.   
-def update_tweet(number, prompt=False, ttext="", verbose=False):
+def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
 
     global current_tweet
     global current_tweet_id
 
     # Read the tweet first. Set it as current and adjust id index via method @read_tweet
-    if read_tweet(number, prompt, verbose) == False:
+    if read_tweet(number, prompt=vprompt, verbose=verbose) == False:
         return
     # Get the new text input
-    if prompt:
+    if tprompt:
         ttext = input("Enter text: ")
 
     if verbose:
@@ -213,7 +213,7 @@ def read_prev(verbose=False):
         print("Going up...")
 
     
-    read_tweet(current_tweet_id, verbose)
+    read_tweet(current_tweet_id, prompt=False, verbose=verbose)
     
 
 # Head the tweet id index + 1 ---> DONE
@@ -233,7 +233,7 @@ def read_next(verbose=False):
     if verbose:
         print("Going down...")
 
-    read_tweet(current_tweet_id+2, verbose)
+    read_tweet(current_tweet_id+2, prompt=False, verbose=verbose)
 
 
 
@@ -302,7 +302,7 @@ if __name__ == "__main__":
 
             # Handle choices with if statements.
             if command == 'c':
-                create_tweet(verbose=True)
+                create_tweet(tprompt=True, verbose=True)
 
             # Read a tweet.
             elif command == 'r':
@@ -324,10 +324,10 @@ if __name__ == "__main__":
                 number = args.pop()
 
                 if number.isnumeric() == False:
-                    update_tweet(0, prompt=True, verbose=True)  # If no number is provided. Prompt inside.
+                    update_tweet(number=0, vprompt=True, tprompt=True, verbose=True)  # If no number is provided. Prompt inside.
                     args.insert(1, number) # Restore argument
                 else:
-                    update_tweet(int(number), prompt=False, verbose=True)
+                    update_tweet(number=int(number), vprompt=False, tprompt=True, verbose=True)
 
             # Delete the current tweet.
             elif command == 'd':
