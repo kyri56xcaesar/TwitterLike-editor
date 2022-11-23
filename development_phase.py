@@ -1,6 +1,23 @@
 from datetime import datetime, date, time, timezone
 import time
 import json
+import logging
+import logging.config
+
+
+
+##################################
+# Logging phase
+logging.config.fileConfig(fname='configfile.conf', disable_existing_loggers=False)
+
+# Get the logger specified in the file
+logger = logging.getLogger(__name__)
+##################################
+
+# DELETE THE CONTENT OF LOGME.TXT FROM A PREVIOUS USER
+with open("logme.txt", 'w') as file:
+    pass
+
 
 
 
@@ -84,6 +101,10 @@ def create_tweet(tprompt=False, ttext="", verbose=False):
         mem_tweets.append(current_tweet)
     # Set the current_tweet_ID
     current_tweet_id = len(mem_tweets) - 1
+
+
+    # Logging
+    logger.info(' (c) - The user has created a new tweet')
     
     return tdate
 
@@ -119,6 +140,10 @@ def read_tweet(number, prompt=False, verbose=False):
 
     current_tweet = mem_tweets[current_tweet_id]
 
+
+    # Logging
+    logger.info(' (r) - The user has read a tweet')
+
     return True
     
 # Update a tweet function handler.   
@@ -142,6 +167,9 @@ def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
     # Update the tweet
     current_tweet.update({"text":ttext})
     current_tweet.update({"created_at":tdate})
+
+    # Logging
+    logger.info(' (u) - The user has updated a tweet')
 
     return tdate
 
@@ -171,6 +199,10 @@ def delete_tweet(verbose=False):
     current_tweet_id = -1
     current_tweet = {}
 
+    # Logging
+    logger.info(' (d) - The user has deleted a tweet')
+
+    return current_tweet=={}
     
     
 # Read the Last tweet of the tweet function handler --> DONE
@@ -193,6 +225,8 @@ def read_Ltweet(verbose=False):
 
     current_tweet = mem_tweets[-1]
 
+    # Logging
+    logger.info(' ($) - The user has read the last tweet')
     
 # Head the tweet id index - 1 ---> DONE
 def read_prev(verbose=False):
@@ -215,6 +249,9 @@ def read_prev(verbose=False):
     
     read_tweet(current_tweet_id, prompt=False, verbose=verbose)
     
+    # Logging
+    logger.info(' (-) - The user has read the previous tweet')
+
 
 # Head the tweet id index + 1 ---> DONE
 def read_next(verbose=False):
@@ -236,6 +273,9 @@ def read_next(verbose=False):
     read_tweet(current_tweet_id+2, prompt=False, verbose=verbose)
 
 
+    # Logging
+    logger.info(' (+) - The user has read the next tweet')
+
 
 # Print the curret_tweet --> DONE
 def print_current(prompt=False, verbose=False):
@@ -256,19 +296,30 @@ def print_current(prompt=False, verbose=False):
     else:
         print("\t", end="")
         print(current_tweet)
+
+    # Logging
+    logger.info(' (=) - The user has printed the current tweet')
+
     
 ## QUIT method      ---> DONE
-def quit(toSave=False):
+def quit(toSave=False, log=True):
     print("Quiting...")
 
     if toSave:
         save_prompt = input("\n*WARNING*\nContents will not be saved. Would you like to save them [Y]? ")
         if save_prompt.upper() == "Y":
             save()
+
+    # Logging
+    if log:
+        logger.info(' (q) - The user has quited the Twitter Viewer & Editor')
+
     exit()
+
+    
     
 ## SAVE method - Overwrites the file --> TODO
-def save(verbose=False):
+def save(verbose=False, log=True):
     if verbose:
         print("Saving contents...")
     time.sleep(0.3)
@@ -280,7 +331,13 @@ def save(verbose=False):
        
     if verbose:
         print("\n\nContents saved!")
+
+
+    # Logging
+    if log:
+        logger.info(' (w) - The user has saved the file')
     
+
 
 
 if __name__ == "__main__":
@@ -359,8 +416,10 @@ if __name__ == "__main__":
 
             # Quit and Save.
             elif command == 'x':
-                save(verbose=True)
-                quit()
+                save(verbose=True, log=False)
+                # Logging
+                logger.info(' (x) - The user has saved the file and quit.')
+                quit(toSave=False, log=False)
             
             # If h is asked implicitely
             elif command == 'h' and len(args) != 1:
