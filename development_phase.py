@@ -291,6 +291,7 @@ if __name__ == "__main__":
 
 
     configureID()
+    help()
 
     # SHELL 
     while(True):
