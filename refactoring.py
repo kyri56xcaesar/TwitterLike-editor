@@ -36,7 +36,7 @@ def configureID():
     try:
         FD = open(FILE_NAME, "rb")
           
-        MEM_TWEETS = (json.loads(tweet) for tweet in FD if tweet != "")
+        MEM_TWEETS = [json.loads(tweet) for tweet in FD if tweet != ""]
 
     except(FileExistsError, json.JSONDecodeError):
         print(f"Something went wrong with {FILE_NAME}. Try again.\n\nExiting...")
@@ -68,7 +68,7 @@ def help():
 @arg ttext: Text given without user prompt. (Testing purposes)
 @arg verbose: Extra info output
 """
-def create_tweet(prompt=False, ttext="", verbose=True):
+def create_tweet(tprompt=False, ttext="", verbose=True):
 
     global CURRENT_TWEET
     global CURRENT_TWEET_ID
@@ -77,7 +77,7 @@ def create_tweet(prompt=False, ttext="", verbose=True):
         print("Creating a tweet...")
 
     """ Input text from user."""
-    if prompt:
+    if tprompt:
         ttext = input("Enter text: ")
 
     """ The exact time date this is occuring. """
@@ -111,7 +111,7 @@ def create_tweet(prompt=False, ttext="", verbose=True):
 @return True/False if successful or not reading occured.
 
 """
-def read_tweet(number, prompt=False, verbose=True):
+def read_tweet(number, prompt=False, verbose=False):
 
     if number < 0:
         print("Invalid tweet ID")
@@ -160,7 +160,7 @@ def read_tweet(number, prompt=False, verbose=True):
 
 """  
 def update_tweet(number, tprompt=False,
-vprompt=False, ttext="", verbose=True):
+vprompt=False, ttext="", verbose=False):
 
     global CURRENT_TWEET
     global CURRENT_TWEET_ID
@@ -193,7 +193,7 @@ Deletes the current tweet, removes it from list, sets id to -1.
 @return True/False if successful or not deletion occured.
 
 """
-def delete_tweet(verbose=True):
+def delete_tweet(verbose=False):
 
     global CURRENT_TWEET_ID
     global CURRENT_TWEET
@@ -224,7 +224,7 @@ Simply reads the last tweet of the list.
 @return True/False if successful or not reading occured.
 
 """
-def read_Ltweet(verbose=True):
+def read_Ltweet(verbose=False):
  
     if MEM_TWEETS == []:
         if verbose:
@@ -253,7 +253,7 @@ def read_Ltweet(verbose=True):
 @return True/False if successful or not reading occured.
 
 """
-def read_prev(verbose=True):
+def read_prev(verbose=False):
 
     global CURRENT_TWEET_ID
 
@@ -282,7 +282,7 @@ def read_prev(verbose=True):
 @return True/False if successful or not reading occured.
 
 """
-def read_next(verbose=True):
+def read_next(verbose=False):
     
     global CURRENT_TWEET_ID
 
@@ -309,7 +309,7 @@ def read_next(verbose=True):
 @arg verbose: Extra info output
 
 """
-def print_current(prompt=False, verbose=True):
+def print_current(prompt=False, verbose=False):
 
     if CURRENT_TWEET_ID == -1 or CURRENT_TWEET == {}:
         if verbose:
@@ -357,7 +357,7 @@ def quit(toSave=False):
 @arg verbose: Extra info output
 
 """
-def save(verbose=True):
+def save(verbose=False):
     if verbose:
         print("Saving contents...")
     time.sleep(0.3)
@@ -400,7 +400,7 @@ if __name__ == "__main__":
 
             # Handle choices with if statements.
             if command == 'c':
-                create_tweet(prompt=True, verbose=True)
+                create_tweet(tprompt=True, verbose=True)
 
             # Read a tweet.
             elif command == 'r':
