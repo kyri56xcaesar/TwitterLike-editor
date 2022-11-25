@@ -1,8 +1,7 @@
 from datetime import datetime, date, time, timezone
 import time
 import json
-from line_profiler import LineProfiler
-import random
+from  memory_profiler import profile
 
 # Name of the file used
 #file_name = "tweetdhead300000.json"
@@ -24,6 +23,7 @@ mem_tweets = []
 # --- Setup method.
 # Initialize the t_ID list with the index/number of each line
 # Consider starting from 1. As the first tweet is ID is 1.
+
 def configureID():
     global mem_tweets
 
@@ -55,7 +55,8 @@ def help():
         \t x :> Exit and save.\n")
 
 
-# Create a tweet function handler.      --> DONE
+# Create a tweet function handler.      --> DONE\
+
 def create_tweet(tprompt=False, ttext="", verbose=False):
 
     global current_tweet
@@ -90,6 +91,7 @@ def create_tweet(tprompt=False, ttext="", verbose=False):
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
+
 def read_tweet(number, prompt=False, verbose=False):
 
 
@@ -122,6 +124,7 @@ def read_tweet(number, prompt=False, verbose=False):
     return True
     
 # Update a tweet function handler.   
+
 def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
 
     global current_tweet
@@ -147,7 +150,9 @@ def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
 
 
     
-# Delete a tweet function handler. 
+# Delete a tweet function handler.
+
+ 
 def delete_tweet(verbose=False):
 
 
@@ -240,6 +245,7 @@ def read_next(verbose=False):
 
 
 # Print the curret_tweet --> DONE
+
 def print_current(prompt=False, verbose=False):
 
     if current_tweet_id == -1 or current_tweet == {}:
@@ -270,6 +276,7 @@ def quit(toSave=False):
     exit()
     
 ## SAVE method - Overwrites the file --> TODO
+
 def save(verbose=False):
     if verbose:
         print("Saving contents...")
@@ -289,38 +296,12 @@ def save(verbose=False):
 
 if __name__ == "__main__":
 
-    lp = LineProfiler()
-    lp_wrapper = lp(configureID)
-    lp_wrapper()
-    print("Line Profiler For configure ID")
-
-    lp_wrapper = lp(create_tweet)
-    lp_wrapper()
-    print("Line Profiler For Creating Tweet")
-
-    i=random.randint(0,200)
-    lp_wrapper = lp(read_tweet)
-    lp_wrapper(i)
-    print("Line Profiler For Reading Tweet")
-
-
-    lp_wrapper = lp(delete_tweet)
-    lp_wrapper()
-    print("Line Profiler For deleting Tweet")
-
-    i=random.randint(0,200)
-    lp_wrapper = lp(update_tweet)
-    lp_wrapper(i)
-    print("Line Profiler For updaing Tweet")
-
-    lp_wrapper = lp(print_current)
-    lp_wrapper()
-    print("Line Profiler For print_current Tweet")    
-
-    lp_wrapper = lp(save)
-    lp_wrapper()
-    print("Line Profiler For Save")   
-
-    lp.print_stats()
-   
-   
+    configureID()
+    #create_tweet()
+    #i=random.randint(0,200)
+    #read_tweet(i)
+   # delete_tweet()
+   # i=random.randint(0,200)
+    #update_tweet(i)
+    #print_current()
+    #save()
