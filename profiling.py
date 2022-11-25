@@ -2,11 +2,11 @@ from datetime import datetime, date, time, timezone
 import time
 import json
 from line_profiler import LineProfiler
-
+import random
 
 # Name of the file used
 #file_name = "tweetdhead300000.json"
-file_name = "test.json"
+file_name = "tweetdhead300000.json"
 
 # list of commands available
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
@@ -293,6 +293,33 @@ if __name__ == "__main__":
     lp_wrapper = lp(configureID)
     lp_wrapper()
     print("Line Profiler For configure ID")
+
+    lp_wrapper = lp(create_tweet)
+    lp_wrapper()
+    print("Line Profiler For Creating Tweet")
+
+    i=random.randint(0,100)
+    lp_wrapper = lp(read_tweet)
+    lp_wrapper(i)
+    print("Line Profiler For Reading Tweet")
+
+
+    lp_wrapper = lp(delete_tweet)
+    lp_wrapper()
+    print("Line Profiler For deleting Tweet")
+
+    i=random.randint(0,5000)
+    lp_wrapper = lp(update_tweet)
+    lp_wrapper(i)
+    print("Line Profiler For updaing Tweet")
+
+    lp_wrapper = lp(print_current)
+    lp_wrapper()
+    print("Line Profiler For print_current Tweet")    
+
+    lp_wrapper = lp(save)
+    lp_wrapper()
+    print("Line Profiler For Save")   
 
     lp.print_stats()
    
