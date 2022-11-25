@@ -1,7 +1,8 @@
 from datetime import datetime, date, time, timezone
 import time
 import json
-from  memory_profiler import profile
+from memory_profiler import profile
+
 
 # Name of the file used
 #file_name = "tweetdhead300000.json"
@@ -23,7 +24,7 @@ mem_tweets = []
 # --- Setup method.
 # Initialize the t_ID list with the index/number of each line
 # Consider starting from 1. As the first tweet is ID is 1.
-
+@profile
 def configureID():
     global mem_tweets
 
