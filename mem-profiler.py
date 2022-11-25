@@ -1,6 +1,7 @@
 from datetime import datetime, date, time, timezone
 import time
 import json
+import random
 from memory_profiler import profile
 
 
@@ -57,7 +58,7 @@ def help():
 
 
 # Create a tweet function handler.      --> DONE\
-
+@profile
 def create_tweet(tprompt=False, ttext="", verbose=False):
 
     global current_tweet
@@ -92,7 +93,7 @@ def create_tweet(tprompt=False, ttext="", verbose=False):
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
-
+@profile
 def read_tweet(number, prompt=False, verbose=False):
 
 
@@ -125,7 +126,7 @@ def read_tweet(number, prompt=False, verbose=False):
     return True
     
 # Update a tweet function handler.   
-
+@profile
 def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
 
     global current_tweet
@@ -153,7 +154,7 @@ def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
     
 # Delete a tweet function handler.
 
- 
+@profile
 def delete_tweet(verbose=False):
 
 
@@ -246,7 +247,7 @@ def read_next(verbose=False):
 
 
 # Print the curret_tweet --> DONE
-
+@profile
 def print_current(prompt=False, verbose=False):
 
     if current_tweet_id == -1 or current_tweet == {}:
@@ -277,7 +278,7 @@ def quit(toSave=False):
     exit()
     
 ## SAVE method - Overwrites the file --> TODO
-
+@profile
 def save(verbose=False):
     if verbose:
         print("Saving contents...")
@@ -298,11 +299,11 @@ def save(verbose=False):
 if __name__ == "__main__":
 
     configureID()
-    #create_tweet()
-    #i=random.randint(0,200)
-    #read_tweet(i)
-   # delete_tweet()
-   # i=random.randint(0,200)
-    #update_tweet(i)
-    #print_current()
-    #save()
+    create_tweet(tprompt=False, ttext="test", verbose=False)
+    i=random.randint(0,200)
+    read_tweet(i,prompt=False, verbose=False)
+    delete_tweet(verbose=False)
+    i=random.randint(0,200)
+    update_tweet(i,tprompt=False,ttext="test_v1", verbose=False)
+    print_current(prompt=False, verbose=False)
+    save(verbose=False)
