@@ -5,11 +5,11 @@ import json
 
 
 # Name of the file used
-#file_name = "tweetdhead300000.json"
-file_name = "test.json"
+file_name = "tweetdhead300000.json"
+#file_name = "test.json"
 
 # list of commands available
-s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
+s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'x', 'h']
 
 # Current tweet selected (as string)
 current_tweet = {}
@@ -55,7 +55,7 @@ def help():
         \t x :> Exit and save.\n")
 
 
-# Create a tweet function handler.      --> DONE
+# Create a tweet function handler. 
 def create_tweet(tprompt=False, ttext="", verbose=False):
 
     global current_tweet
@@ -88,7 +88,7 @@ def create_tweet(tprompt=False, ttext="", verbose=False):
     return tdate
 
     
-# Read a tweet function handler.  --> DONE
+# Read a tweet function handler.
 # Returns True if it reads False if not.
 def read_tweet(number, prompt=False, verbose=False):
 
@@ -175,7 +175,7 @@ def delete_tweet(verbose=False):
     return current_tweet=={}
     
     
-# Read the Last tweet of the tweet function handler --> DONE
+# Read the Last tweet of the tweet function handler 
 def read_Ltweet(verbose=False):
  
     if mem_tweets == []:
@@ -196,7 +196,7 @@ def read_Ltweet(verbose=False):
     current_tweet = mem_tweets[-1]
 
     
-# Head the tweet id index - 1 ---> DONE
+# Head the tweet id index - 1 
 def read_prev(verbose=False):
     global current_tweet_id
 
@@ -218,7 +218,7 @@ def read_prev(verbose=False):
     read_tweet(current_tweet_id, prompt=False, verbose=verbose)
     
 
-# Head the tweet id index + 1 ---> DONE
+# Head the tweet id index + 1 
 def read_next(verbose=False):
     global current_tweet_id
 
@@ -239,7 +239,7 @@ def read_next(verbose=False):
 
 
 
-# Print the curret_tweet --> DONE
+# Print the curret_tweet 
 def print_current(prompt=False, verbose=False):
 
     if current_tweet_id == -1 or current_tweet == {}:
@@ -269,7 +269,7 @@ def quit(toSave=False):
             save()
     exit()
     
-## SAVE method - Overwrites the file --> TODO
+## SAVE method - Overwrites the file 
 def save(verbose=False):
     if verbose:
         print("Saving contents...")

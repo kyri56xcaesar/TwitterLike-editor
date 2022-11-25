@@ -4,23 +4,26 @@ import json
 import sys
 
 
+""" Shell sign """
+SHELL_S = "#_> "
 
-# Name of the file used
+""" Name of the file used """
 #FILE_NAME = "tweetdhead300000.json"
 FILE_NAME = "test.json"
+FD = None
 
-# list of commands available
-s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
+""" list of commands available """
+s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'x', 'h']
 
-# Current tweet selected (as string)
-CURRENT_TWEET = {}
-# Current tweet ID selected
+""" Current tweet selected (as string) """
+CURRENT_TWEET = dict()
+""" Current tweet ID selected"""
 CURRENT_TWEET_ID = -1
 
-# Memory tweets
-MEM_TWEETS = []
+""" Memory tweets """
+MEM_TWEETS = list()
 
-
+##############################################################################################
 
 """ --- Setup method.
 Initialize the t_ID list with the index/number of each line
@@ -28,12 +31,13 @@ Consider starting from 1. As the first tweet is ID is 1
 """
 def configureID():
     global MEM_TWEETS
+    global FD
 
     try:
-        with open(FILE_NAME, "rb") as file:
+        FD = open(FILE_NAME, "rb")
+          
+        MEM_TWEETS = (json.loads(tweet) for tweet in FD if tweet != "")
 
-            for line in file:
-                MEM_TWEETS.append(json.loads(line))
     except(FileExistsError, json.JSONDecodeError):
         print(f"Something went wrong with {FILE_NAME}. Try again.\n\nExiting...")
         sys.exit(-1)
@@ -55,8 +59,8 @@ def help():
         \t + :> Navigate to next tweet.\n\
         \t = :> Print current tweet.\n\
         \t q :> Quit without save.\n\
-        \t w :> Save and write to disk.\n\
-        \t x :> Exit and save.\n")
+        \t w :> Save/write to disk.\n\
+        \t x :> Save and exit.\n")
 
 
 """ Create a tweet function handler. 
@@ -124,16 +128,18 @@ def read_tweet(number, prompt=False, verbose=True):
         number = int(number)
     
     # Check if number is valid
-    if number < 1 or number > len(MEM_TWEETS):
+    if number < 1 or number > len(list(MEM_TWEETS)):
         if verbose:
             print("Invalid tweet ID")
         return False
 
-    if verbose:
-        print("Reading a tweet...")
+    
     CURRENT_TWEET_ID = number - 1
 
     CURRENT_TWEET = MEM_TWEETS[CURRENT_TWEET_ID]
+
+    if verbose:
+        print(f"Reading tweet: {CURRENT_TWEET_ID + 1} ...")
 
     return True
 
@@ -332,12 +338,17 @@ Quit method exits the program without saving it.
 
 """
 def quit(toSave=False):
+    
+    global FD
+
     print("Quiting...")
 
     if toSave:
         save_prompt = input("\n*WARNING*\nContents will not be saved. Would you like to save them [Y]? ")
         if save_prompt.upper() == "Y":
             save()
+
+    FD.close()
     sys.exit()
     
 
@@ -351,11 +362,15 @@ def save(verbose=True):
         print("Saving contents...")
     time.sleep(0.3)
 
-    with open(FILE_NAME, "w") as file:
-        for line in MEM_TWEETS:
-            json.dump(line, file)
-            file.write("\n")
-       
+    try:
+        with open(FILE_NAME, "w") as file:
+            for line in MEM_TWEETS:
+                json.dump(line, file)
+                file.write("\n")
+    except (Exception):
+        print("Something may have gone catastrophically bad.")
+        raise Exception
+
     if verbose:
         print("\n\nContents saved!")
     
@@ -363,20 +378,25 @@ def save(verbose=True):
 """ Main method """
 if __name__ == "__main__":
 
-
+    # Initialize
     configureID()
+    help()
 
     # SHELL 
     while(True):
         # Prompt input
-        args = input("#_> ").split()
+        args = input(SHELL_S).split()
         args.reverse()
 
-        while args != []:
+        while args:
+
             command = args.pop()
+        
+            # Guard case statement
+            if command not in s_commands:
+                help()
+                continue
 
-
-            # Not sure how to handle garbage arguments. Ignore or iterate next ;<?
 
             # Handle choices with if statements.
             if command == 'c':
@@ -386,20 +406,23 @@ if __name__ == "__main__":
             elif command == 'r':
                 number = 'foo'
                 # Check if number is given
-                if args != []:
+                if args:
                     number = args.pop()            
    
                 if number.isnumeric() == False:
                     read_tweet(0, True)    # If no number is provided. Prompt inside.
-                    args.insert(1, number) # Restore argument
+                    if number in s_commands:
+                        args.insert(1, number) # Restore argument
                 else:
                     read_tweet(int(number), False)
                     
                         
             # Update a tweet.
             elif command == 'u':
+                number = 'foo'
                 # Check if a number is given
-                number = args.pop()
+                if args:
+                    number = args.pop()
 
                 if number.isnumeric() == False:
                     update_tweet(number=0,\
@@ -407,7 +430,8 @@ if __name__ == "__main__":
                          tprompt=True,\
                          verbose=True)
                            # If no number is provided. Prompt inside.
-                    args.insert(1, number) # Restore argument
+                    if number in s_commands:
+                        args.insert(1, number) # Restore argument
                 else:
                     update_tweet(number=int(number),\
                         vprompt=False,\
@@ -451,7 +475,5 @@ if __name__ == "__main__":
             elif command == 'h' and len(args) != 1:
                 help()
 
-            else:
-                help()
 
         
