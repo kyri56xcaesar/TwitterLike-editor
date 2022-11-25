@@ -2,7 +2,7 @@ from datetime import datetime, date, time, timezone
 import time
 import json
 from memory_profiler import profile
-
+import random
 
 # Name of the file used
 #file_name = "tweetdhead300000.json"
@@ -57,8 +57,8 @@ def help():
 
 
 # Create a tweet function handler.      --> DONE\
-
-def create_tweet(tprompt=False, ttext="", verbose=False):
+@profile
+def create_tweet(tprompt=True, ttext="", verbose=False):
 
     global current_tweet
     global current_tweet_id
@@ -92,7 +92,7 @@ def create_tweet(tprompt=False, ttext="", verbose=False):
     
 # Read a tweet function handler.  --> DONE
 # Returns True if it reads False if not.
-
+@profile
 def read_tweet(number, prompt=False, verbose=False):
 
 
@@ -125,7 +125,7 @@ def read_tweet(number, prompt=False, verbose=False):
     return True
     
 # Update a tweet function handler.   
-
+@profile
 def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
 
     global current_tweet
@@ -153,7 +153,7 @@ def update_tweet(number, vprompt=False, tprompt=True, ttext="", verbose=False):
     
 # Delete a tweet function handler.
 
- 
+@profile 
 def delete_tweet(verbose=False):
 
 
@@ -182,6 +182,7 @@ def delete_tweet(verbose=False):
     
     
 # Read the Last tweet of the tweet function handler --> DONE
+@profile
 def read_Ltweet(verbose=False):
  
     if mem_tweets == []:
@@ -246,7 +247,7 @@ def read_next(verbose=False):
 
 
 # Print the curret_tweet --> DONE
-
+@profile
 def print_current(prompt=False, verbose=False):
 
     if current_tweet_id == -1 or current_tweet == {}:
@@ -267,6 +268,7 @@ def print_current(prompt=False, verbose=False):
         print(current_tweet)
     
 ## QUIT method      ---> DONE
+
 def quit(toSave=False):
     print("Quiting...")
 
@@ -277,7 +279,7 @@ def quit(toSave=False):
     exit()
     
 ## SAVE method - Overwrites the file --> TODO
-
+@profile
 def save(verbose=False):
     if verbose:
         print("Saving contents...")
@@ -298,11 +300,12 @@ def save(verbose=False):
 if __name__ == "__main__":
 
     configureID()
-    #create_tweet()
-    #i=random.randint(0,200)
-    #read_tweet(i)
-   # delete_tweet()
-   # i=random.randint(0,200)
-    #update_tweet(i)
-    #print_current()
-    #save()
+    create_tweet()
+    i=random.randint(0,200)
+    read_tweet(i)
+    delete_tweet()
+    i=random.randint(0,200)
+    update_tweet(i)
+    print_current()
+    save()
+    
