@@ -5,7 +5,7 @@ import random
 from memory_profiler import profile
 
 
-#file_name = "tweetdhead300000.json"
+#file_name = "test.json"
 file_name = "tweetdhead300000.json"
 
 s_commands = ['c', 'r', 'u', 'd', '$', '-', '+', '=', 'q', 'w', 'h']
