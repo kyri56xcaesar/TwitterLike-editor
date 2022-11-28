@@ -54,12 +54,12 @@ class DevTest(unittest.TestCase):
 
 
         # read a new tweet
-        dev.create_tweet(prompt=False, ttext="new_tweet", verbose=False)
+        dev.create_tweet(tprompt=False, ttext="new_tweet", verbose=False)
         dev.read_tweet(len(dev.mem_tweets),prompt=False, verbose=False)
         self.assertEqual(dev.current_tweet.get("text"), "new_tweet")
 
         # read an updated tweet
-        dev.update_tweet(1, prompt=False, ttext="updated_tweet", verbose=False)
+        dev.update_tweet(number=1, tprompt=False, ttext="updated_tweet", verbose=False)
         reset()
         dev.read_tweet(1, prompt=False, verbose=False)
         self.assertEqual(dev.current_tweet.get("text"), "updated_tweet")
@@ -82,7 +82,7 @@ class DevTest(unittest.TestCase):
 
     def test_create(self):
         reset()
-        time = dev.create_tweet(prompt=False, ttext="test", verbose=False)
+        time = dev.create_tweet(tprompt=False, ttext="test", verbose=False)
 
         # test if a tweet is created
         self.assertEqual(dev.current_tweet.get("text")=="test", True)
@@ -101,7 +101,7 @@ class DevTest(unittest.TestCase):
         # test update on an existing tweet
         reset()
         reboot()
-        time = dev.update_tweet(5, prompt=False, ttext="test", verbose=False)
+        time = dev.update_tweet(number=5, tprompt=False, ttext="test", verbose=False)
 
         if dev.current_tweet_id != -1:
             # test if new text is set correctly
@@ -115,7 +115,7 @@ class DevTest(unittest.TestCase):
 
         #############
         # Case when updating an invalid tweet number
-        dev.update_tweet(0, prompt=False, ttext="test2", verbose=False)
+        dev.update_tweet(number=0, tprompt=False, ttext="test2", verbose=False)
         
         if dev.current_tweet_id != -1:
             self.assertEqual(dev.current_tweet_id, 4)
@@ -215,7 +215,7 @@ class DevTest(unittest.TestCase):
         reset()
         dev.read_tweet(2, verbose=False)
         temp = dev.current_tweet
-        dev.update_tweet(2, ttext="updated test")
+        dev.update_tweet(number=2, tprompt=False, ttext="updated test")
         dev.read_next(verbose=False)
         dev.read_prev(verbose=False)
         self.assertEqual(dev.current_tweet.get("text"), "updated test")
@@ -258,6 +258,7 @@ class DevTest(unittest.TestCase):
         
 
     def test_print(self):
+        reset()
         dev.print_current(verbose=False)
         self.assertEqual(dev.current_tweet_id, -1)
         self.assertEqual(dev.current_tweet=={},True)
@@ -272,8 +273,8 @@ class DevTest(unittest.TestCase):
     #
     #
     #    # change something
-    #    dev.create_tweet(prompt=False, ttext="foo", verbose=False)
-    #    dev.update_tweet(len(dev.mem_tweets), prompt=False, ttext="foo x2", verbose=False)
+    #    dev.create_tweet(tprompt=False, ttext="foo", verbose=False)
+    #    dev.update_tweet(len(dev.mem_tweets), tprompt=False, ttext="foo x2", verbose=False)
     #    dev.delete_tweet(verbose=False)
     #
     #    # save to the file
@@ -298,14 +299,14 @@ class DevTest(unittest.TestCase):
         
         # Create a new tweet.
         # Check if its the last.
-        dev.create_tweet(prompt=False, ttext="test1", verbose=False)
+        dev.create_tweet(tprompt=False, ttext="test1", verbose=False)
         dev.read_Ltweet(verbose=False)
         temp2 = dev.current_tweet
         self.assertEqual(dev.current_tweet.get("text"), "test1")
 
         # Update the new tweet. 
         # Check if its still last
-        dev.update_tweet(dev.current_tweet_id + 1, prompt=False, ttext="test1.1", verbose=False)
+        dev.update_tweet(number=dev.current_tweet_id + 1, tprompt=False, ttext="test1.1", verbose=False)
         self.assertEqual(dev.current_tweet.get("text"), "test1.1")
 
 
@@ -315,14 +316,6 @@ class DevTest(unittest.TestCase):
         dev.read_Ltweet(verbose=False)
         self.assertEqual(dev.current_tweet, temp)
     
-    def test_deleteIfEmpty(self):
-        dev.delete_tweet(verbose=False)
-
-        #dev.mem_tweets.clear()
-        #self.assertEqual(dev.mem_tweets==[], True)
-        #self.assertEqual(dev.current_tweet=={}, True)
-        #self.assertEqual(dev.current_tweet_id == -1, True)
-
 
 
 
